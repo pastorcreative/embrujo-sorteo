@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-bg: oklch(89.9% 0.061 343.231);
+    --color-text: oklch(29.1% 0.149 302.717);
+    --color-accent: oklch(59.2% 0.249 0.584);
+    --color-surface: oklch(95% 0.03 343.231);
+    --color-surface-2: oklch(93% 0.045 343.231);
+    --color-border: oklch(80% 0.08 343.231);
+    --color-accent-glow: oklch(59.2% 0.249 0.584 / 0.35);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    min-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Playfair Display', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+}
