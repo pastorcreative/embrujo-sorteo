@@ -1,6 +1,7 @@
 import { useState, type KeyboardEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { UserPlus, Trash2, Ban, CircleOff, ArrowRight } from 'lucide-react'
 import { useSorteo } from '../hooks/useSorteo'
 import logo from '../assets/embrujo-sin-fondo.webp'
 
@@ -37,8 +38,8 @@ export const SetupPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <img src={logo} alt="Embrujo Modas" className="mx-auto" style={{ height: '90px', objectFit: 'contain' }} />
-        <p className="text-sm tracking-[0.3em] uppercase mt-2"
+        <img src={logo} alt="Embrujo Modas" className="mx-auto" style={{ height: '180px', objectFit: 'contain' }} />
+        <p className="text-base tracking-[0.3em] uppercase mt-2"
           style={{ color: 'var(--color-accent)', fontFamily: "'DM Mono', monospace" }}>
           sorteo
         </p>
@@ -75,16 +76,15 @@ export const SetupPage = () => {
           <button
             onClick={handleAdd}
             disabled={!inputVal.trim()}
-            className="px-5 py-3 rounded-xl font-bold text-base transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-3 rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
             style={{
               background: 'var(--color-accent)',
               color: 'oklch(98% 0.01 343)',
               border: 'none',
-              fontFamily: "'Playfair Display', serif",
               boxShadow: '0 4px 18px var(--color-accent-glow)',
             }}
           >
-            +
+            <UserPlus size={22} strokeWidth={2} />
           </button>
         </div>
       </motion.div>
@@ -124,26 +124,26 @@ export const SetupPage = () => {
                   <button
                     onClick={() => toggleProhibido(nombre)}
                     title={isProhibido ? 'Quitar exclusión' : 'Marcar como excluido'}
-                    className="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 text-xs"
+                    className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200"
                     style={{
                       background: isProhibido ? 'var(--color-accent)' : 'transparent',
                       border: `1.5px solid ${isProhibido ? 'var(--color-accent)' : 'var(--color-border)'}`,
                       color: isProhibido ? 'white' : 'var(--color-border)',
                     }}
                   >
-                    {isProhibido ? '✕' : '⊘'}
+                    {isProhibido ? <CircleOff size={18} strokeWidth={2} /> : <Ban size={18} strokeWidth={2} />}
                   </button>
                   {/* Eliminar */}
                   <button
                     onClick={() => removeNombre(nombre)}
-                    className="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 text-xs opacity-50 hover:opacity-100"
+                    className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 opacity-50 hover:opacity-100"
                     style={{
                       background: 'transparent',
                       border: '1.5px solid var(--color-border)',
                       color: 'var(--color-text)',
                     }}
                   >
-                    ×
+                    <Trash2 size={18} strokeWidth={2} />
                   </button>
                 </div>
               </motion.div>
@@ -191,7 +191,7 @@ export const SetupPage = () => {
           boxShadow: canStart ? '0 6px 30px oklch(29.1% 0.149 302.717 / 0.25)' : 'none',
         }}
       >
-        Ir al Sorteo →
+        <span className="flex items-center gap-2">Ir al Sorteo <ArrowRight size={20} strokeWidth={2.5} /></span>
       </motion.button>
 
       {!canStart && nombres.length > 0 && (
