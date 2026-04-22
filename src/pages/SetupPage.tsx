@@ -2,6 +2,7 @@ import { useState, type KeyboardEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useSorteo } from '../hooks/useSorteo'
+import logo from '../assets/embrujo-sin-fondo.webp'
 
 export const SetupPage = () => {
   const { nombres, nombreProhibido, addNombre, removeNombre, setNombreProhibido } = useSorteo()
@@ -36,14 +37,11 @@ export const SetupPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <p className="text-sm tracking-[0.3em] uppercase mb-1 font-mono-custom"
-          style={{ color: 'var(--color-accent)' }}>
-          configuración
+        <img src={logo} alt="Embrujo Modas" className="mx-auto" style={{ height: '90px', objectFit: 'contain' }} />
+        <p className="text-sm tracking-[0.3em] uppercase mt-2"
+          style={{ color: 'var(--color-accent)', fontFamily: "'DM Mono', monospace" }}>
+          sorteo
         </p>
-        <h1 className="text-5xl md:text-6xl font-bold leading-tight"
-          style={{ color: 'var(--color-text)', fontFamily: "'Playfair Display', serif" }}>
-          Embrujo Modas
-        </h1>
         <p className="text-base mt-2 opacity-60"
           style={{ color: 'var(--color-text)', fontFamily: "'DM Mono', monospace" }}>
           Añade los participantes del sorteo

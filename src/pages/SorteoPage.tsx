@@ -1,15 +1,15 @@
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useSorteo } from '../hooks/useSorteo'
+import logo from '../assets/embrujo-sin-fondo.webp'
 import { SpinningDrum } from '../components/SpinningDrum'
 import { ResultModal } from '../components/ResultModal'
 
 export const SorteoPage = () => {
-  const { nombres, nombreProhibido, ganador, isSpinning, ejecutarSorteo, resetGanador } = useSorteo()
+  const { nombres, ganador, isSpinning, ejecutarSorteo, resetGanador } = useSorteo()
   const navigate = useNavigate()
 
-  const elegibles = nombres.filter(n => n !== nombreProhibido)
-  const canSortear = elegibles.length >= 2 && !isSpinning && !ganador
+  const canSortear = nombres.length >= 2 && !isSpinning && !ganador
 
   return (
     <div
@@ -34,18 +34,13 @@ export const SorteoPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55 }}
       >
+        <img src={logo} alt="Embrujo Modas" className="mx-auto" style={{ height: '100px', objectFit: 'contain' }} />
         <p
-          className="text-xs tracking-[0.4em] uppercase mb-2"
+          className="text-xs tracking-[0.4em] uppercase mt-2"
           style={{ color: 'var(--color-accent)', fontFamily: "'DM Mono', monospace" }}
         >
           ✦ sorteo ✦
         </p>
-        <h1
-          className="text-5xl md:text-6xl font-bold"
-          style={{ color: 'var(--color-text)', fontFamily: "'Playfair Display', serif" }}
-        >
-          El Embrujo
-        </h1>
       </motion.div>
 
       {/* Drum principal */}
@@ -71,17 +66,6 @@ export const SorteoPage = () => {
         )}
       </motion.div>
 
-      {/* Info excluido */}
-      {nombreProhibido && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-xs z-10"
-          style={{ color: 'var(--color-accent)', fontFamily: "'DM Mono', monospace", opacity: 0.7 }}
-        >
-          ⊘ {nombreProhibido} excluido · {elegibles.length} en juego
-        </motion.p>
-      )}
 
       {/* Botones */}
       <div className="flex flex-col items-center gap-3 z-10 w-full max-w-xs">
@@ -122,9 +106,8 @@ export const SorteoPage = () => {
             className="text-xs px-2 py-1 rounded-md"
             style={{
               background: 'var(--color-surface-2)',
-              color: n === nombreProhibido ? 'var(--color-accent)' : 'var(--color-text)',
+              color: 'var(--color-text)',
               fontFamily: "'DM Mono', monospace",
-              textDecoration: n === nombreProhibido ? 'line-through' : 'none',
             }}
           >
             {n}

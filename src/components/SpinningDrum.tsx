@@ -7,7 +7,7 @@ interface SpinningDrumProps {
   ganador: string | null
 }
 
-export const SpinningDrum = ({ nombres, isSpinning, ganador }: SpinningDrumProps) => {
+export const SpinningDrum = ({ nombres, isSpinning }: SpinningDrumProps) => {
   const [displayedIndex, setDisplayedIndex] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
