@@ -4,9 +4,10 @@ import tailwindcss from '@tailwindcss/vite'
 import basicSsl from '@vitejs/plugin-basic-ssl'
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss(), basicSsl()],
-  server: {
-    https: true,
-  },
-})
+export default defineConfig(({ command }) => ({
+  plugins: [
+    react(),
+    tailwindcss(),
+    ...(command === 'serve' ? [basicSsl()] : []),
+  ],
+}))
