@@ -6,6 +6,7 @@ export interface SorteoState {
   ganador: string | null
   isSpinning: boolean
   addNombre: (nombre: string) => void
+  addNombres: (nuevos: string[]) => void
   removeNombre: (nombre: string) => void
   setNombreProhibido: (nombre: string | null) => void
   ejecutarSorteo: () => void
@@ -25,6 +26,14 @@ export const SorteoProvider = ({ children }: { children: ReactNode }) => {
     const trimmed = nombre.trim()
     if (!trimmed) return
     setNombres(prev => prev.includes(trimmed) ? prev : [...prev, trimmed])
+  }, [])
+
+  const addNombres = useCallback((nuevos: string[]) => {
+    setNombres(prev => {
+      const set = new Set(prev)
+      const toAdd = nuevos.map(n => n.trim()).filter(n => n && !set.has(n))
+      return [...prev, ...toAdd]
+    })
   }, [])
 
   const removeNombre = useCallback((nombre: string) => {
@@ -62,6 +71,7 @@ export const SorteoProvider = ({ children }: { children: ReactNode }) => {
         ganador,
         isSpinning,
         addNombre,
+        addNombres,
         removeNombre,
         setNombreProhibido,
         ejecutarSorteo,

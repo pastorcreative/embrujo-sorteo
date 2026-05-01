@@ -1,13 +1,17 @@
 import { useState, type KeyboardEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { UserPlus, Trash2, Ban, CircleOff, ArrowRight } from 'lucide-react'
+import { UserPlus, Trash2, Ban, CircleOff, ArrowRight, PenLine, Globe } from 'lucide-react'
 import { useSorteo } from '../hooks/useSorteo'
+import { FacebookImport } from '../components/FacebookImport'
 import logo from '../assets/embrujo-sin-fondo.webp'
+
+type Tab = 'manual' | 'facebook'
 
 export const SetupPage = () => {
   const { nombres, nombreProhibido, addNombre, removeNombre, setNombreProhibido } = useSorteo()
   const [inputVal, setInputVal] = useState('')
+  const [activeTab, setActiveTab] = useState<Tab>('manual')
   const navigate = useNavigate()
 
   const handleAdd = () => {
@@ -49,119 +53,175 @@ export const SetupPage = () => {
         </p>
       </motion.div>
 
-      {/* Input */}
+      {/* Tabs */}
       <motion.div
         className="w-full max-w-md"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+        transition={{ delay: 0.15, duration: 0.5 }}
       >
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={inputVal}
-            onChange={e => setInputVal(e.target.value)}
-            onKeyDown={handleKey}
-            placeholder="Nombre del participante…"
-            className="flex-1 px-4 py-3 rounded-xl text-base outline-none transition-all duration-200"
-            style={{
-              background: 'var(--color-surface)',
-              color: 'var(--color-text)',
-              border: '1.5px solid var(--color-border)',
-              fontFamily: "'DM Mono', monospace",
-            }}
-            onFocus={e => e.currentTarget.style.borderColor = 'var(--color-accent)'}
-            onBlur={e => e.currentTarget.style.borderColor = 'var(--color-border)'}
-          />
-          <button
-            onClick={handleAdd}
-            disabled={!inputVal.trim()}
-            className="px-4 py-3 rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{
-              background: 'var(--color-accent)',
-              color: 'oklch(98% 0.01 343)',
-              border: 'none',
-              boxShadow: '0 4px 18px var(--color-accent-glow)',
-            }}
-          >
-            <UserPlus size={22} strokeWidth={2} />
-          </button>
+        <div className="flex rounded-xl p-1 gap-1"
+          style={{ background: 'var(--color-surface)', border: '1.5px solid var(--color-border)' }}>
+          {([
+            { key: 'manual' as Tab, label: 'Manual', Icon: PenLine },
+            { key: 'facebook' as Tab, label: 'Facebook', Icon: Globe },
+          ]).map(({ key, label, Icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className="relative flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200"
+              style={{
+                fontFamily: "'DM Mono', monospace",
+                color: activeTab === key ? 'var(--color-bg)' : 'var(--color-text)',
+                background: 'transparent',
+                border: 'none',
+                zIndex: 1,
+              }}
+            >
+              {activeTab === key && (
+                <motion.span
+                  layoutId="tab-pill"
+                  className="absolute inset-0 rounded-lg"
+                  style={{ background: 'var(--color-text)', zIndex: -1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <Icon size={16} strokeWidth={2} />
+              <span>{label}</span>
+            </button>
+          ))}
         </div>
       </motion.div>
 
-      {/* Lista de participantes */}
-      <div className="w-full max-w-md flex flex-col gap-2">
-        <AnimatePresence>
-          {nombres.map((nombre) => {
-            const isProhibido = nombre === nombreProhibido
-            return (
-              <motion.div
-                key={nombre}
-                layout
-                initial={{ opacity: 0, x: -20, scale: 0.95 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 20, scale: 0.9 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-                className="flex items-center justify-between px-4 py-3 rounded-xl"
+      {/* Contenido por tab */}
+      <AnimatePresence mode="wait">
+        {activeTab === 'manual' ? (
+          <motion.div
+            key="tab-manual"
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -16 }}
+            transition={{ duration: 0.22 }}
+            className="w-full max-w-md flex flex-col gap-4"
+          >
+            {/* Input */}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={inputVal}
+                onChange={e => setInputVal(e.target.value)}
+                onKeyDown={handleKey}
+                placeholder="Nombre del participante…"
+                className="flex-1 px-4 py-3 rounded-xl text-base outline-none transition-all duration-200"
                 style={{
-                  background: isProhibido ? 'oklch(89% 0.06 343 / 0.6)' : 'var(--color-surface)',
-                  border: `1.5px solid ${isProhibido ? 'var(--color-accent)' : 'var(--color-border)'}`,
-                  boxShadow: isProhibido ? '0 2px 12px var(--color-accent-glow)' : 'none',
+                  background: 'var(--color-surface)',
+                  color: 'var(--color-text)',
+                  border: '1.5px solid var(--color-border)',
+                  fontFamily: "'DM Mono', monospace",
+                }}
+                onFocus={e => e.currentTarget.style.borderColor = 'var(--color-accent)'}
+                onBlur={e => e.currentTarget.style.borderColor = 'var(--color-border)'}
+              />
+              <button
+                onClick={handleAdd}
+                disabled={!inputVal.trim()}
+                className="px-4 py-3 rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{
+                  background: 'var(--color-accent)',
+                  color: 'oklch(98% 0.01 343)',
+                  border: 'none',
+                  boxShadow: '0 4px 18px var(--color-accent-glow)',
                 }}
               >
-                <span
-                  className="text-base flex-1"
-                  style={{
-                    color: isProhibido ? 'var(--color-accent)' : 'var(--color-text)',
-                    fontFamily: "'Playfair Display', serif",
-                    fontStyle: isProhibido ? 'italic' : 'normal',
-                  }}
-                >
-                  {nombre}
-                </span>
-                <div className="flex items-center gap-2">
-                  {/* Toggle prohibido */}
-                  <button
-                    onClick={() => toggleProhibido(nombre)}
-                    title={isProhibido ? 'Quitar exclusión' : 'Marcar como excluido'}
-                    className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200"
-                    style={{
-                      background: isProhibido ? 'var(--color-accent)' : 'transparent',
-                      border: `1.5px solid ${isProhibido ? 'var(--color-accent)' : 'var(--color-border)'}`,
-                      color: isProhibido ? 'white' : 'var(--color-border)',
-                    }}
-                  >
-                    {isProhibido ? <CircleOff size={18} strokeWidth={2} /> : <Ban size={18} strokeWidth={2} />}
-                  </button>
-                  {/* Eliminar */}
-                  <button
-                    onClick={() => removeNombre(nombre)}
-                    className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 opacity-50 hover:opacity-100"
-                    style={{
-                      background: 'transparent',
-                      border: '1.5px solid var(--color-border)',
-                      color: 'var(--color-text)',
-                    }}
-                  >
-                    <Trash2 size={18} strokeWidth={2} />
-                  </button>
-                </div>
-              </motion.div>
-            )
-          })}
-        </AnimatePresence>
+                <UserPlus size={22} strokeWidth={2} />
+              </button>
+            </div>
 
-        {nombres.length === 0 && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-8 opacity-40 text-sm"
-            style={{ fontFamily: "'DM Mono', monospace", color: 'var(--color-text)' }}
+            {/* Lista de participantes */}
+            <div className="flex flex-col gap-2">
+              <AnimatePresence>
+                {nombres.map((nombre) => {
+                  const isProhibido = nombre === nombreProhibido
+                  return (
+                    <motion.div
+                      key={nombre}
+                      layout
+                      initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, x: 20, scale: 0.9 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+                      className="flex items-center justify-between px-4 py-3 rounded-xl"
+                      style={{
+                        background: isProhibido ? 'oklch(89% 0.06 343 / 0.6)' : 'var(--color-surface)',
+                        border: `1.5px solid ${isProhibido ? 'var(--color-accent)' : 'var(--color-border)'}`,
+                        boxShadow: isProhibido ? '0 2px 12px var(--color-accent-glow)' : 'none',
+                      }}
+                    >
+                      <span
+                        className="text-base flex-1"
+                        style={{
+                          color: isProhibido ? 'var(--color-accent)' : 'var(--color-text)',
+                          fontFamily: "'Playfair Display', serif",
+                          fontStyle: isProhibido ? 'italic' : 'normal',
+                        }}
+                      >
+                        {nombre}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => toggleProhibido(nombre)}
+                          title={isProhibido ? 'Quitar exclusión' : 'Marcar como excluido'}
+                          className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200"
+                          style={{
+                            background: isProhibido ? 'var(--color-accent)' : 'transparent',
+                            border: `1.5px solid ${isProhibido ? 'var(--color-accent)' : 'var(--color-border)'}`,
+                            color: isProhibido ? 'white' : 'var(--color-border)',
+                          }}
+                        >
+                          {isProhibido ? <CircleOff size={18} strokeWidth={2} /> : <Ban size={18} strokeWidth={2} />}
+                        </button>
+                        <button
+                          onClick={() => removeNombre(nombre)}
+                          className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 opacity-50 hover:opacity-100"
+                          style={{
+                            background: 'transparent',
+                            border: '1.5px solid var(--color-border)',
+                            color: 'var(--color-text)',
+                          }}
+                        >
+                          <Trash2 size={18} strokeWidth={2} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </AnimatePresence>
+
+              {nombres.length === 0 && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center py-8 opacity-40 text-sm"
+                  style={{ fontFamily: "'DM Mono', monospace", color: 'var(--color-text)' }}
+                >
+                  Sin participantes aún
+                </motion.p>
+              )}
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="tab-facebook"
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 16 }}
+            transition={{ duration: 0.22 }}
+            className="w-full max-w-md"
           >
-            Sin participantes aún
-          </motion.p>
+            <FacebookImport />
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
 
       {/* Leyenda excluidos */}
       {nombreProhibido && (
@@ -199,6 +259,15 @@ export const SetupPage = () => {
           Necesitas al menos 2 participantes elegibles
         </p>
       )}
+
+      {/* Enlace política de privacidad */}
+      <button
+        onClick={() => navigate('/privacy')}
+        className="text-xs opacity-30 hover:opacity-60 transition-opacity duration-200 pb-2"
+        style={{ background: 'none', border: 'none', color: 'var(--color-text)', fontFamily: "'DM Mono', monospace", cursor: 'pointer' }}
+      >
+        Política de privacidad
+      </button>
     </div>
   )
 }
