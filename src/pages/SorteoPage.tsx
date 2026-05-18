@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useSorteo } from '../hooks/useSorteo'
 import logo from '../assets/embrujo-sin-fondo.webp'
-import { SpinningDrum } from '../components/SpinningDrum'
+import { GiftDrum } from '../components/GiftDrum'
 import { ResultModal } from '../components/ResultModal'
 
 export const SorteoPage = () => {
@@ -51,8 +51,8 @@ export const SorteoPage = () => {
         transition={{ delay: 0.2, duration: 0.5 }}
       >
         {nombres.length > 0 ? (
-          <SpinningDrum
-            nombres={nombres}
+          <GiftDrum
+            totalParticipants={nombres.length}
             isSpinning={isSpinning}
             ganador={ganador}
           />
